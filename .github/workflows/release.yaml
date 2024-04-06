@@ -19,11 +19,13 @@ jobs:
         run: cargo build --release
 
       - name: Package
-        run: tar -czvf release.tar.gz -C target/release .
+        run: tar -czvf release.tar.gz -C target/release . &>/dev/null
 
       - name: Publish Release
         id: publish_release
         uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
         with:
           files: |
             release.tar.gz
