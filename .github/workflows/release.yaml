@@ -19,7 +19,7 @@ jobs:
         run: cargo build --release
 
       - name: Package
-        run: tar -czvf release.tar.gz -C target/release . &>/dev/null
+        run: tar -czvf release.tar.gz -C target/release .
 
       - name: Publish Release
         id: publish_release
@@ -29,7 +29,7 @@ jobs:
         with:
           files: |
             release.tar.gz
-          tag_name: ${{ github.sha }}
-          release_name: Release ${{ github.sha }}
+          tag_name: ${{ github.sha.slice(0, 7) }}
+          name: Release ${{ github.sha.slice(0, 7) }}
           body: |
-            Release for commit ${{ github.sha }}
+            Release for commit ${{ github.sha.slice(0, 7) }}
