@@ -1,0 +1,16 @@
+[Unit]
+Description=Run the Wake-On-Lan (WOL) bot
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=PATH_TO_WTP_BIN
+WorkingDirectory=PATH_TO_WORKDIR
+Restart=always
+RestartSec=5
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=wol
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,35 @@
+name: Rust Build & Publish
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@v1
+      - name: Build
+        run: cargo build --release
+
+      - name: Package
+        run: tar -czvf release.tar.gz -C target/release .
+
+      - name: Publish Release
+        id: publish_release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: |
+            release.tar.gz
+          tag_name: ${{ github.sha }}
+          release_name: Release ${{ github.sha }}
+          body: |
+            Release for commit ${{ github.sha }}
