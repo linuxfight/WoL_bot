@@ -13,6 +13,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Shorten Commit SHA
+        id: shorten_sha
+        run: echo "::set-output name=short_sha::${GITHUB_SHA:0:7}"
+
       - name: Set up rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
       - name: Build
@@ -29,7 +33,7 @@ jobs:
         with:
           files: |
             release.tar.gz
-          tag_name: ${{ github.sha.slice(0, 7) }}
-          name: Release ${{ github.sha.slice(0, 7) }}
+          tag_name: ${{ steps.shorten_sha.outputs.short_sha }}
+          release_name: Release ${{ steps.shorten_sha.outputs.short_sha }}
           body: |
-            Release for commit ${{ github.sha.slice(0, 7) }}
+            Release for commit ${{ steps.shorten_sha.outputs.short_sha }}
