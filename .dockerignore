@@ -30,3 +30,6 @@
 /target
 LICENSE
 README.md
+config.json
+*.db
+**/.github
