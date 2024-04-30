@@ -2,7 +2,7 @@
 
 # Installation
 1. Edit systemd service to ```/etc/systemd/system/wol.service```.
-2. Create config in workdir.
+2. Create config in ```config/config.json```.
 3. Enable and start it.
 
 # Example ```config.json```

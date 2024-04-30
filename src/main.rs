@@ -1,3 +1,4 @@
+use std::env;
 use std::time::Duration;
 use teloxide::{prelude::*, utils::command::BotCommands};
 use wakey::WolPacket;
@@ -17,6 +18,9 @@ struct Config {
 fn read_config_from_file(file_path: &str) -> Config {
     use std::fs::File;
     use std::io::prelude::*;
+
+    let path = env::current_dir().unwrap();
+    println!("The current directory is {}", path.display());
 
     // Read the contents of the file
     let mut file = File::open(file_path).expect("Unable to open config file");
@@ -40,7 +44,7 @@ lazy_static! {
 #[tokio::main]
 async fn main() {
     pretty_env_logger::init();
-    log::info!("Starting wol bot...");
+    println!("Starting wol bot...");
 
     let bot = Bot::new(&CONFIG.bot_token);
 
