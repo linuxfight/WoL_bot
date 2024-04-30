@@ -34,7 +34,7 @@ fn read_config_from_file(file_path: &str) -> Config {
 }
 
 lazy_static! {
-    static ref CONFIG: Config = read_config_from_file("config.json");
+    static ref CONFIG: Config = read_config_from_file("config/config.json");
 }
 
 #[tokio::main]
