@@ -7,12 +7,13 @@ RUN apk add --no-cache openssl-dev musl-dev
 ENV OPENSSL_DIR=/usr
 
 COPY . .
-RUN cargo build --release
+RUN RUSTFLAGS='-C target-feature=-crt-static' cargo build --release
 
 FROM alpine
 WORKDIR /app
 
 COPY --from=builder /app/target/release .
+RUN apk add --no-cache libgcc libstdc++ openssl
 
 ARG UID=10001
 RUN adduser \
