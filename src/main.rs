@@ -1,9 +1,8 @@
 use std::env;
+use std::sync::Arc;
 use std::time::Duration;
 use teloxide::{prelude::*, utils::command::BotCommands};
 use wakey::WolPacket;
-use ping::ping;
-use rand::random;
 use serde::{Deserialize, Serialize};
 use lazy_static::lazy_static;
 
@@ -81,19 +80,14 @@ async fn answer(bot: Bot, msg: Message, cmd: Command) -> ResponseResult<()> {
                 let ip = &CONFIG.ip;
                 let addr = ip.parse().expect("IP is invalid");
                 let timeout = Duration::from_secs(1);
-                let resp = ping(
-                    addr,
-                    Some(timeout),
-                    Some(166),
-                    Some(3),
-                    Some(5),
-                    Some(&random()),
-                ).is_ok();
-                if resp {
-                    bot.send_message(msg.chat.id, "PC is on").await?;
-                } else {
-                    bot.send_message(msg.chat.id, "PC is off").await?;
-                }
+                let data = [1, 2, 3, 4];
+                let data_arc = Arc::new(&data[..]);
+                let options = ping_rs::PingOptions { ttl: 128, dont_fragment: true };
+                let result = ping_rs::send_ping_async(&addr, timeout, data_arc, Some(&options)).await;
+                match result {
+                    Ok(reply) => bot.send_message(msg.chat.id, format!("{} is online", reply.address)).await?,
+                    Err(e) => bot.send_message(msg.chat.id, format!("{} is offline, error: {:?}", ip, e)).await?
+                };
             }
             Command::Power => {
                 let wol = WolPacket::from_string(&CONFIG.mac, ':').unwrap();

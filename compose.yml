@@ -1,0 +1,7 @@
+services:
+  bot:
+    image: ghcr.io/linuxfight/wol_bot:master
+    volumes:
+      - ./config:/app/config
+    restart: unless-stopped
+    network_mode: host
