@@ -2,7 +2,6 @@ FROM rust:alpine as builder
 
 WORKDIR /app
 
-RUN rustup target add x86_64-unknown-linux-musl
 RUN apk add --no-cache openssl-dev musl-dev
 ENV OPENSSL_DIR=/usr
 
