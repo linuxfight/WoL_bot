@@ -1,17 +1,17 @@
-FROM rust:slim-bookworm as builder
+FROM rust:alpine as builder
 
 WORKDIR /app
 
-RUN apt update -y && apt install openssl libssl-dev pkg-config -y
+RUN apk add --no-cache openssl-dev musl-dev
 
 COPY . .
-RUN cargo build --release
+RUN RUSTFLAGS='-C target-feature=-crt-static' cargo build --release
 
-FROM debian:bookworm-slim
+FROM alpine
 WORKDIR /app
 
 COPY --from=builder /app/target/release .
-RUN apt update -y && apt install openssl -y
+RUN apk add --no-cache libgcc libstdc++ openssl
 
 ARG UID=10001
 RUN adduser \
