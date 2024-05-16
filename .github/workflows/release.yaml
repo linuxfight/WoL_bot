@@ -38,9 +38,8 @@ jobs:
         run: tar -czvf release-${{ steps.variables.outputs.ARCH }}.tar.gz -C target/release .
 
       - name: Publish Release
-        id: publish_release
-        uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: ncipollo/release-action@v1
         with:
-          files: release-${{ steps.variables.outputs.ARCH }}.tar.gz
+          artifacts: release-${{ steps.variables.outputs.ARCH }}.tar.gz
+          name: Release for commit ${{ steps.shorten_sha.outputs.SHORT_SHA }}
+          tag: ${{ steps.shorten_sha.outputs.SHORT_SHA }}
