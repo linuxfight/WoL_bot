@@ -23,11 +23,9 @@ jobs:
 
       - name: Set outputs
         id: outputs
-        env:
-          - PLATFORM=${{ matrix.platform }}
         run: |
           echo "SHORT_SHA=${GITHUB_SHA:0:7}" >> "$GITHUB_OUTPUT" &&
-          echo "ARCH=${$PLATFORM | cut -d'/' -f2- }" >> "$GITHUB_OUTPUT"
+          echo "ARCH=${${{ matrix.platform }} | cut -d'/' -f2- }" >> "$GITHUB_OUTPUT"
 
       - name: Set up rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
