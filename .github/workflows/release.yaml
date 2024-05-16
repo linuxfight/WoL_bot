@@ -11,6 +11,11 @@ jobs:
     permissions:
       contents: write
       packages: write
+    strategy:
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm64
 
     steps:
       - name: Checkout Repository
@@ -38,7 +43,7 @@ jobs:
         with:
           files: |
             release.tar.gz
-          tag_name: ${{ steps.shorten_sha.outputs.short_sha }}
-          release_name: Release ${{ steps.shorten_sha.outputs.short_sha }}
+          tag_name: ${{ steps.shorten_sha.outputs.short_sha }}-${{ matrix.platform }}
+          release_name: Release ${{ steps.shorten_sha.outputs.short_sha }}-${{ matrix.platform }}
           body: |
-            Release for commit ${{ steps.shorten_sha.outputs.short_sha }}
+            Release for commit ${{ steps.shorten_sha.outputs.short_sha }}-${{ matrix.platform }}
