@@ -11,21 +11,14 @@ jobs:
     permissions:
       contents: write
       packages: write
-    strategy:
-      matrix:
-        platform:
-          - linux/amd64
-          - linux/arm64
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set outputs
-        id: outputs
-        run: |
-          echo "SHORT_SHA=${GITHUB_SHA:0:7}" >> "$GITHUB_OUTPUT" &&
-          echo "ARCH=${${{ matrix.platform }} | cut -d'/' -f2- }" >> "$GITHUB_OUTPUT"
+      - name: Shorten Commit SHA
+        id: shorten_sha
+        run: echo "::set-output name=short_sha::${GITHUB_SHA:0:7}"
 
       - name: Set up rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
@@ -35,18 +28,17 @@ jobs:
         run: cargo build --release
 
       - name: Package
-        run: tar -czvf release-${{ steps.variables.outputs.ARCH }}.tar.gz -C target/release .
+        run: tar -czvf release.tar.gz -C target/release .
 
       - name: Publish Release
         id: publish_release
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ steps.variables.outputs.SHORT_SHA }}
         with:
           files: |
-            release-${{ steps.variables.outputs.ARCH }}.tar.gz
-          tag_name: $TAG
-          release_name: Release $TAG
+            release.tar.gz
+          tag_name: ${{ steps.shorten_sha.outputs.short_sha }}
+          release_name: Release ${{ steps.shorten_sha.outputs.short_sha }}
           body: |
-            Release for commit $TAG
+            Release for commit ${{ steps.shorten_sha.outputs.short_sha }}
