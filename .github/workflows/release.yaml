@@ -24,7 +24,7 @@ jobs:
       - name: Set outputs
         id: outputs
         env:
-          PLATFORM=${{ matrix.platform }}
+          - PLATFORM=${{ matrix.platform }}
         run: |
           echo "SHORT_SHA=${GITHUB_SHA:0:7}" >> "$GITHUB_OUTPUT" &&
           echo "ARCH=${$PLATFORM | cut -d'/' -f2- }" >> "$GITHUB_OUTPUT"
