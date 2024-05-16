@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - master
-    tags:
-      - '*'
 
 jobs:
   build:
@@ -40,7 +38,15 @@ jobs:
         run: tar -czvf release-${{ steps.variables.outputs.ARCH }}.tar.gz -C target/release .
 
       - name: Publish Release
-        uses: ncipollo/release-action@v1
+        id: publish_release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.variables.outputs.SHORT_SHA }}
         with:
-          artifacts: release-${{ steps.variables.outputs.ARCH }}.tar.gz
-          name: Release for commit ${{ steps.shorten_sha.outputs.SHORT_SHA }}
+          files: |
+            release-${{ steps.variables.outputs.ARCH }}.tar.gz
+          tag_name: $TAG
+          release_name: Release $TAG
+          body: |
+            Release for commit $TAG
