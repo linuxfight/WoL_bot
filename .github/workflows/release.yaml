@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - '*'
 
 jobs:
   build:
@@ -42,4 +44,3 @@ jobs:
         with:
           artifacts: release-${{ steps.variables.outputs.ARCH }}.tar.gz
           name: Release for commit ${{ steps.shorten_sha.outputs.SHORT_SHA }}
-          tag: ${{ steps.shorten_sha.outputs.SHORT_SHA }}
